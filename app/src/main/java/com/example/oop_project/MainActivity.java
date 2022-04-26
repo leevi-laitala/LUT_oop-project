@@ -83,6 +83,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.KeyEvent;
@@ -90,12 +91,15 @@ import android.view.View.OnKeyListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Spinner;
 import android.widget.ArrayAdapter;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
+
+import com.example.oop_project.ui.login.LoginActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,6 +113,7 @@ import javax.xml.parsers.*;
 
 
 public class MainActivity extends AppCompatActivity implements OnItemSelectedListener {
+    private Button loginButton;
     ArrayList<String> arrIds = new ArrayList<String>();
     ArrayList<String> arrNames = new ArrayList<String>();
     ArrayList<String> arrStarts = new ArrayList<String>();
@@ -126,6 +131,13 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        loginButton = (Button) findViewById(R.id.loginButton);
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openLoginActivity();
+            }
+        });
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
@@ -219,6 +231,11 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
                 return false;
             }
         });
+    }
+
+    public void openLoginActivity() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
     }
 
     public void constructListView() {
