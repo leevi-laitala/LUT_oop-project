@@ -7,83 +7,23 @@
     tools:context=".MainActivity">
 
     <Spinner
-        android:id="@+id/theaters"
-        android:layout_width="306dp"
-        android:layout_height="48dp"
+        android:id="@+id/theatreList"
+        android:layout_width="327dp"
+        android:layout_height="40dp"
         android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/editTextDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
-        android:layout_marginEnd="76dp"
-        android:ems="10"
-        android:hint="YYYY-mm-dd"
-        android:inputType="date"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/theaters" />
-
-    <EditText
-        android:id="@+id/editTextTimeStart"
-        android:layout_width="77dp"
-        android:layout_height="49dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="208dp"
-        android:ems="10"
-        android:hint="HH:MM"
-        android:inputType="time"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/editTextDate"
-        app:layout_constraintTop_toBottomOf="@+id/editTextDate" />
-
-    <TextView
-        android:id="@+id/editText"
-        android:layout_width="77dp"
-        android:layout_height="23dp"
-        android:layout_marginTop="44dp"
-        android:layout_marginEnd="16dp"
-        android:text="Date"
-        app:layout_constraintEnd_toStartOf="@+id/editTextDate"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/theaters" />
-
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="411dp"
-        android:layout_height="348dp"
+        android:id="@+id/movieList"
+        android:layout_width="413dp"
+        android:layout_height="592dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTimeStart"
-        app:layout_constraintVertical_bias="0.895" />
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="84dp"
-        android:layout_height="39dp"
-        android:text="Time from-to"
-        app:layout_constraintBottom_toTopOf="@+id/recyclerView"
-        app:layout_constraintStart_toStartOf="@+id/editText"
-        app:layout_constraintTop_toBottomOf="@+id/editText"
-        app:layout_constraintVertical_bias="0.208" />
-
-    <EditText
-        android:id="@+id/editTextTimeEnd"
-        android:layout_width="94dp"
-        android:layout_height="47dp"
-        android:ems="10"
-        android:hint="HH:MM"
-        android:inputType="time"
-        app:layout_constraintBottom_toBottomOf="@+id/editTextTimeStart"
-        app:layout_constraintEnd_toEndOf="@+id/editTextDate"
-        app:layout_constraintHorizontal_bias="0.87"
-        app:layout_constraintStart_toStartOf="@+id/editTextDate"
-        app:layout_constraintTop_toBottomOf="@+id/editTextDate"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/theatreList" />
 
     <Button
         android:id="@+id/loginButton"
