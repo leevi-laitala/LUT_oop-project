@@ -1,9 +1,9 @@
 package com.example.oop_project;
 
+import android.os.Build;
+import androidx.annotation.RequiresApi;
 import org.w3c.dom.*;
-
 import java.util.ArrayList;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -16,13 +16,12 @@ public class Theatre {
 
     private ArrayList<Movie> m_arrMovies = new ArrayList<Movie>();
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     Theatre(int areaId, String name) {
         m_theatreAreaID = areaId;
         m_theatreName = name;
 
         m_theatreURL = "https://www.finnkino.fi/xml/Schedule/?area=%s"; // Contains format "%s"
-
-        //System.out.println("Added new theatre with name of " + m_theatreName);
         fetchMovies();
     }
 
@@ -39,6 +38,7 @@ public class Theatre {
         m_arrMovies.add(movie);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public boolean fetchMovies() { // Returns success as boolean
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -54,8 +54,9 @@ public class Theatre {
                 String title = element.getElementsByTagName("Title").item(0).getTextContent();
                 String dtStart = element.getElementsByTagName("dttmShowStart").item(0).getTextContent();
                 String dtEnd = element.getElementsByTagName("dttmShowEnd").item(0).getTextContent();
+                String portraitURL = element.getElementsByTagName("EventLargeImagePortrait").item(0).getTextContent();
 
-                m_arrMovies.add(new Movie(title, dtStart, dtEnd));
+                m_arrMovies.add(new Movie(title, dtStart, dtEnd, portraitURL));
             }
 
             return true; // Success

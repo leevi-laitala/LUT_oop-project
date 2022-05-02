@@ -1,10 +1,15 @@
 package com.example.oop_project;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -60,8 +65,53 @@ public class TheatreManager {
         return m_arrTheatres.get(m_selectedTheatreID).getMovies();
     }
 
+    public ArrayList<String> getMovieTitles() {
+        ArrayList<Movie> movies = getMovies();
+        ArrayList<String> movieTitles = new ArrayList<String>();
+
+        for (int i = 0; i < movies.size(); i++) {
+            movieTitles.add(movies.get(i).getTitle());
+        }
+
+        return movieTitles;
+    }
+
+    public ArrayList<String> getMoviePortraitURLs() {
+        ArrayList<Movie> movies = getMovies();
+        ArrayList<String> movieURLs = new ArrayList<String>();
+
+        for (int i = 0; i < movies.size(); i++) {
+            movieURLs.add(movies.get(i).getPortraitURL());
+        }
+
+        return movieURLs;
+    }
+
+    public ArrayList<LocalDateTime> getMovieBeginTimes() {
+        ArrayList<Movie> movies = getMovies();
+        ArrayList<LocalDateTime> movieBeginTimes = new ArrayList<LocalDateTime>();
+
+        for (int i = 0; i < movies.size(); i++) {
+            movieBeginTimes.add(movies.get(i).getBeginTime());
+        }
+
+        return movieBeginTimes;
+    }
+
+    public ArrayList<LocalDateTime> getMovieEndTimes() {
+        ArrayList<Movie> movies = getMovies();
+        ArrayList<LocalDateTime> movieEndTimes = new ArrayList<LocalDateTime>();
+
+        for (int i = 0; i < movies.size(); i++) {
+            movieEndTimes.add(movies.get(i).getEndTime());
+        }
+
+        return movieEndTimes;
+    }
+
     // Parses theatre ids and names from given url, and stores them in m_arrTheatres array
     // as Theatre objects
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void readTheatreIDs(String url) {
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
