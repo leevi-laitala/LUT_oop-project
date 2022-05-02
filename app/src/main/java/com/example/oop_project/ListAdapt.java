@@ -32,12 +32,15 @@ class ListAdapt extends RecyclerView.Adapter<ListAdapt.ViewHolder> {
     ArrayList<LocalDateTime> m_arrBeginTimes;
     ArrayList<LocalDateTime> m_arrEndTimes;
     Context context;
+    ItemClickListener mItemListener;
 
-    public ListAdapt(Context cx, ArrayList<String> titles, ArrayList<String> portraitURLs, ArrayList<LocalDateTime> beginTimes, ArrayList<LocalDateTime> endTimes) {
+    public ListAdapt(Context cx, ArrayList<String> titles, ArrayList<String> portraitURLs, ArrayList<LocalDateTime> beginTimes, ArrayList<LocalDateTime> endTimes, ItemClickListener ItemClickListener) {
         context = cx;
         m_arrTitles = titles;
         m_arrBeginTimes = beginTimes;
         m_arrEndTimes = endTimes;
+  
+        this.mItemListener = ItemClickListener;
 
         m_arrPortraitBmps = new ArrayList<Bitmap>();
 
@@ -65,10 +68,8 @@ class ListAdapt extends RecyclerView.Adapter<ListAdapt.ViewHolder> {
         DateTimeFormatter format = DateTimeFormatter.ofPattern("HH:mm dd MM yyyy");
         holder.startTime.setText(m_arrBeginTimes.get(position).format(format));
 
-        holder.title.setOnKeyListener(new View.OnKeyListener() {
-            public void onClick(View v) {
-                System.out.println("Jefa :D");
-            }
+        holder.itemView.setOnClickListener(view -> {
+            mItemListener.OnItemClick(position);
         });
     }
 
@@ -133,5 +134,9 @@ class ListAdapt extends RecyclerView.Adapter<ListAdapt.ViewHolder> {
             e1.printStackTrace();
         }
         return bitmap;
+    }
+
+    public interface ItemClickListener{
+        void OnItemClick(int position);
     }
 }

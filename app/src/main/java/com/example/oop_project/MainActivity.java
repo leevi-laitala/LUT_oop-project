@@ -1,5 +1,6 @@
 package com.example.oop_project;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -7,12 +8,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.security.AppUriAuthenticationPolicy;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.oop_project.ui.login.LoginActivity;
 
@@ -87,7 +91,16 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
         ArrayList<LocalDateTime> movieBeginTimes = manager.getMovieBeginTimes();
         ArrayList<LocalDateTime> movieEndTimes = manager.getMovieEndTimes();
 
-        ListAdapt adapter = new ListAdapt(this, movieTitles, moviePortraitURLs, movieBeginTimes, movieEndTimes);
+        ListAdapt adapter = new ListAdapt(this, movieTitles, moviePortraitURLs, movieBeginTimes, movieEndTimes, new ListAdapt.ItemClickListener() {
+            @Override
+            public void OnItemClick(int position) {
+                //movies.get(position).getId(); gets id
+                Intent movieIntent = new Intent(MainActivity.this, MovieActivity.class);
+                startActivity(movieIntent);
+            }
+        });
+        ListAdapt adapter = new ListAdapt(this, movieTitles);
+      
         RecyclerView recyclerView = findViewById(R.id.movieList);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
