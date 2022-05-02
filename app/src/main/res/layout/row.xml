@@ -17,12 +17,12 @@
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="32dp"
                 android:layout_marginTop="16dp"
                 android:text="Title"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/portrait"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
@@ -36,14 +36,22 @@
                 app:layout_constraintTop_toBottomOf="@+id/title" />
 
             <TextView
-                android:id="@+id/end"
+                android:id="@+id/length"
                 android:layout_width="345dp"
                 android:layout_height="18dp"
                 android:layout_marginTop="8dp"
-                android:text="End"
+                android:text="Length"
                 android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="@+id/start"
                 app:layout_constraintTop_toBottomOf="@+id/start" />
+
+            <ImageView
+                android:id="@+id/portrait"
+                android:layout_width="82dp"
+                android:layout_height="108dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:srcCompat="@drawable/ic_launcher_foreground"
+                tools:layout_editor_absoluteY="0dp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
