@@ -14,10 +14,13 @@ import java.util.ArrayList;
 class ListAdapt extends RecyclerView.Adapter<ListAdapt.ViewHolder> {
     ArrayList<String> arrTitle;
     Context context;
+    ItemClickListener mItemListener;
 
-    public ListAdapt(Context cx, ArrayList<String> titles) {
+    public ListAdapt(Context cx, ArrayList<String> titles, ItemClickListener ItemClickListener) {
         context = cx;
         arrTitle = titles;
+        this.mItemListener = ItemClickListener;
+
     }
 
     @NonNull
@@ -33,6 +36,9 @@ class ListAdapt extends RecyclerView.Adapter<ListAdapt.ViewHolder> {
         holder.title.setText(arrTitle.get(position));
         //holder.start.setText("Starts at " + arrStart.get(position).substring(11, 16) + " " + arrStart.get(position).substring(0, 10));
         //holder.end.setText("Ends at " + arrEnd.get(position).substring(11, 16) + " " + arrStart.get(position).substring(0, 10));
+        holder.itemView.setOnClickListener(view -> {
+            mItemListener.OnItemClick(position);
+        });
     }
 
     @Override
@@ -48,5 +54,9 @@ class ListAdapt extends RecyclerView.Adapter<ListAdapt.ViewHolder> {
 
             title = itemView.findViewById(R.id.title);
         }
+    }
+
+    public interface ItemClickListener{
+        void OnItemClick(int position);
     }
 }
