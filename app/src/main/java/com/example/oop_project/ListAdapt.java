@@ -1,11 +1,9 @@
 package com.example.oop_project;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.time.LocalDateTime;
@@ -32,20 +29,20 @@ class ListAdapt extends RecyclerView.Adapter<ListAdapt.ViewHolder> {
     ArrayList<LocalDateTime> m_arrBeginTimes;
     ArrayList<LocalDateTime> m_arrEndTimes;
     Context context;
-    ItemClickListener mItemListener;
+    ItemClickListener m_itemListener;
 
-    public ListAdapt(Context cx, ArrayList<String> titles, ArrayList<String> portraitURLs, ArrayList<LocalDateTime> beginTimes, ArrayList<LocalDateTime> endTimes, ItemClickListener ItemClickListener) {
+    public ListAdapt(Context cx, ArrayList<String> titles, ArrayList<String> portraitURLs, ArrayList<LocalDateTime> beginTimes, ArrayList<LocalDateTime> endTimes, ItemClickListener itemClickListener) {
         context = cx;
         m_arrTitles = titles;
         m_arrBeginTimes = beginTimes;
         m_arrEndTimes = endTimes;
   
-        this.mItemListener = ItemClickListener;
+        m_itemListener = itemClickListener;
 
         m_arrPortraitBmps = new ArrayList<Bitmap>();
 
         for (int i = 0; i < portraitURLs.size(); i++) {
-            String url = portraitURLs.get(i).replace("http://", "https://");
+            String url = portraitURLs.get(i).replace("http://", "https://"); // Upgrade to https
             m_arrPortraitBmps.add(DownloadImage(url));
         }
     }
@@ -58,7 +55,6 @@ class ListAdapt extends RecyclerView.Adapter<ListAdapt.ViewHolder> {
         return new ViewHolder(view);
     }
 
-    // TODO: Make whole row clickable
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
@@ -69,7 +65,7 @@ class ListAdapt extends RecyclerView.Adapter<ListAdapt.ViewHolder> {
         holder.startTime.setText(m_arrBeginTimes.get(position).format(format));
 
         holder.itemView.setOnClickListener(view -> {
-            mItemListener.OnItemClick(position);
+            m_itemListener.OnItemClick(position);
         });
     }
 
@@ -97,6 +93,8 @@ class ListAdapt extends RecyclerView.Adapter<ListAdapt.ViewHolder> {
     // Functions OpenHttpConnection and DownloadImage copied from https://stackoverflow.com/a/12173580
 
     private InputStream OpenHttpConnection(String urlString) throws IOException {
+        System.out.println(urlString);
+
         InputStream in = null;
         int response = -1;
 
@@ -129,7 +127,9 @@ class ListAdapt extends RecyclerView.Adapter<ListAdapt.ViewHolder> {
         try {
             in = OpenHttpConnection(URL);
             bitmap = BitmapFactory.decodeStream(in);
-            in.close();
+            if (in != null) {
+                in.close();
+            }
         } catch (IOException e1) {
             e1.printStackTrace();
         }
