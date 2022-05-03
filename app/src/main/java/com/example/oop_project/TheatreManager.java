@@ -20,12 +20,14 @@ public class TheatreManager {
     private int m_selectedTheatreID; // Current state. Stores array index
 
     private String m_urlTheatreAreaIDs;
+    private LocalDateTime m_date;
 
-
-
+    @RequiresApi(api = Build.VERSION_CODES.O)
     TheatreManager() {
         m_urlTheatreAreaIDs = "https://www.finnkino.fi/xml/TheatreAreas/";
         readTheatreIDs(m_urlTheatreAreaIDs);
+
+        setDate(null);
 
         m_selectedTheatreID = 0;
     }
@@ -42,8 +44,27 @@ public class TheatreManager {
     }
 
     public void selectTheatre(int id) {
-        // TODO: Guards to prevent invalid ids
-        m_selectedTheatreID = id;
+        // Check if id exists
+        for (int i = 0; i < m_arrTheatres.size(); i++) {
+            if (m_arrTheatres.get(i).getAreaID() == id) {
+                m_selectedTheatreID = id;
+                return;
+            }
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void setDate(LocalDateTime dt) { // If given null as parameter, set date to today
+        if (dt != null) {
+            m_date = dt;
+        } else {
+            LocalDateTime today = LocalDateTime.now();
+            m_date = today;
+        }
+
+        for (int i = 0; i < m_arrTheatres.size(); i++) {
+            m_arrTheatres.get(i).setDate(m_date);
+        }
     }
 
     public ArrayList<Theatre> getTheatres() {
@@ -61,10 +82,24 @@ public class TheatreManager {
     }
 
     // Get movies from current selected theatre
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public ArrayList<Movie> getMovies() {
-        return m_arrTheatres.get(m_selectedTheatreID).getMovies();
+        ArrayList<Movie> movies = m_arrTheatres.get(m_selectedTheatreID).getMovies();
+        ArrayList<Movie> validMovies = new ArrayList<Movie>();
+
+        System.out.println("Parsing valid movies");
+
+        for (int i = 0; i < movies.size(); i++) {
+            if (movies.get(i).getBeginTime().isAfter(m_date)) {
+                validMovies.add(movies.get(i));
+                System.out.println("-> Added " + movies.get(i).getTitle() + " to valid movies list!");
+            }
+        }
+
+        return validMovies;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public ArrayList<String> getMovieTitles() {
         ArrayList<Movie> movies = getMovies();
         ArrayList<String> movieTitles = new ArrayList<String>();
@@ -76,6 +111,7 @@ public class TheatreManager {
         return movieTitles;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public ArrayList<String> getMoviePortraitURLs() {
         ArrayList<Movie> movies = getMovies();
         ArrayList<String> movieURLs = new ArrayList<String>();
@@ -87,6 +123,7 @@ public class TheatreManager {
         return movieURLs;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public ArrayList<LocalDateTime> getMovieBeginTimes() {
         ArrayList<Movie> movies = getMovies();
         ArrayList<LocalDateTime> movieBeginTimes = new ArrayList<LocalDateTime>();
@@ -98,6 +135,7 @@ public class TheatreManager {
         return movieBeginTimes;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public ArrayList<LocalDateTime> getMovieEndTimes() {
         ArrayList<Movie> movies = getMovies();
         ArrayList<LocalDateTime> movieEndTimes = new ArrayList<LocalDateTime>();
