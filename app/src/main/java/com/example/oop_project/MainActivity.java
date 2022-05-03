@@ -1,35 +1,42 @@
 package com.example.oop_project;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.security.AppUriAuthenticationPolicy;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.DatePicker;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.example.oop_project.ui.login.LoginActivity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements OnItemSelectedListener {
     private Button loginButton;
+    private Button dateButton;
+    private DatePickerDialog datePickerDialog;
 
     ArrayList<Theatre> arrTheatres = new ArrayList<Theatre>(); // Test array containing theatre objects
     TheatreManager manager;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +80,10 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
             }
         });
         */
+
+        initDatePicker();
+
+        dateButton = findViewById(R.id.selectDateButton);
     }
 
     public void openLoginActivity() {
@@ -85,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
         startActivity(intent);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void constructListView() {
         ArrayList<String> movieTitles = manager.getMovieTitles();
         ArrayList<String> moviePortraitURLs = manager.getMoviePortraitURLs();
@@ -106,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         manager.selectTheatre(position);
@@ -119,5 +132,44 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {}
+
+    private void initDatePicker()
+    {
+        DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener()
+        {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int day)
+            {
+                month = month + 1;
+
+                DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy.M.d");
+                LocalDateTime date = LocalDate.from(format.parse(year + "." + month + "." + day)).atStartOfDay();
+
+                manager.setDate(date);
+                try {
+                    constructListView();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        Calendar cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH);
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+
+        int style = AlertDialog.THEME_HOLO_LIGHT;
+
+        datePickerDialog = new DatePickerDialog(this, style, dateSetListener, year, month, day);
+        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+        datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 365);
+    }
+
+    public void openDatePicker(View view)
+    {
+        datePickerDialog.show();
+    }
 }
 
