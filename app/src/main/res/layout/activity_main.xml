@@ -8,46 +8,45 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
 
         <Spinner
             android:id="@+id/theatreList"
-            android:layout_width="327dp"
+            android:layout_width="236dp"
             android:layout_height="40dp"
-            android:layout_marginTop="48dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.19"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/movieList"
-            android:layout_width="413dp"
-            android:layout_height="592dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="410dp"
+            android:layout_height="561dp"
+            android:layout_marginTop="48dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/theatreList"
-            app:layout_constraintVertical_bias="0.895" />
+            app:layout_constraintTop_toBottomOf="@+id/theatreList" />
 
         <Button
             android:id="@+id/loginButton"
-            android:layout_width="43dp"
-            android:layout_height="40dp"
-            android:text="Button"
+            android:layout_width="115dp"
+            android:layout_height="39dp"
+            android:layout_marginStart="284dp"
+            android:text="Archive"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/selectDateButton" />
 
         <Button
             android:id="@+id/selectDateButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="300dp"
+            android:layout_width="115dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="28dp"
             android:onClick="openDatePicker"
-            android:text="Button"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="0dp" />
+            android:text="Set Date"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.232"
+            app:layout_constraintStart_toEndOf="@+id/theatreList"
+            app:layout_constraintTop_toTopOf="@+id/theatreList" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

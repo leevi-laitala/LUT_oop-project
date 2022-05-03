@@ -20,13 +20,15 @@ public class Movie {
     private String m_urlEventImagePortrait;
     private String m_urlEventImageLandscape;
     private String m_urlRatingIcon;
+    private String m_eventID;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    Movie(String title, String begin, String end, String portraitURL, String landscapeURL, String ratingIconURL) {
+    Movie(String title, String begin, String end, String portraitURL, String landscapeURL, String ratingIconURL, String eventid) {
         m_title = title;
         m_urlEventImagePortrait = portraitURL;
         m_urlEventImageLandscape = landscapeURL;
         m_urlRatingIcon = ratingIconURL;
+        m_eventID = eventid;
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         m_timeBegin = LocalDateTime.from(dtf.parse(begin.replace("T", " ")));
@@ -38,6 +40,8 @@ public class Movie {
     public String getTitle() {
         return m_title;
     }
+
+    public String getEventIDUrl() { return "https://www.finnkino.fi/xml/Schedule/?EventID=" + m_eventID; }
 
     public String getPortraitURL() {
         return m_urlEventImagePortrait;

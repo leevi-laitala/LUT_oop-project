@@ -8,50 +8,80 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-class ListAdapt extends RecyclerView.Adapter<ListAdapt.ViewHolder> {
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+class ArchiveAdapt extends RecyclerView.Adapter<ArchiveAdapt.ViewHolder> {
     ArrayList<String> m_arrTitles;
     ArrayList<Bitmap> m_arrPortraitBmps;
-    ArrayList<LocalDateTime> m_arrBeginTimes;
-    ArrayList<LocalDateTime> m_arrEndTimes;
+    ArrayList<Float> m_arrRatings;
     Context context;
     ItemClickListener m_itemListener;
 
-    public ListAdapt(Context cx, ArrayList<String> titles, ArrayList<String> portraitURLs, ArrayList<LocalDateTime> beginTimes, ArrayList<LocalDateTime> endTimes, ItemClickListener itemClickListener) {
+    public ArchiveAdapt(Context cx, ArrayList<String> eventIDs, ArrayList<Float> ratings, ItemClickListener itemClickListener) {
         context = cx;
-        m_arrTitles = titles;
-        m_arrBeginTimes = beginTimes;
-        m_arrEndTimes = endTimes;
-  
-        m_itemListener = itemClickListener;
+        m_arrRatings = ratings;
 
+        m_arrTitles = new ArrayList<String>();
         m_arrPortraitBmps = new ArrayList<Bitmap>();
 
-        for (int i = 0; i < portraitURLs.size(); i++) {
-            String url = portraitURLs.get(i).replace("http://", "https://"); // Upgrade to https
-            m_arrPortraitBmps.add(DownloadImage(url));
+        System.out.println(ratings);
+
+        try {
+            for (int i = 0; i < eventIDs.size(); i++) {
+                DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+                Document doc = builder.parse(eventIDs.get(i));
+                doc.getDocumentElement().normalize();
+
+                NodeList events = doc.getDocumentElement().getElementsByTagName("Show");
+
+                Node node = events.item(0);
+                Element element = (Element) node;
+
+                String portraitURL;
+                try {
+                    portraitURL = element.getElementsByTagName("EventLargeImagePortrait").item(0).getTextContent().replace("http://", "https://");
+                } catch (NullPointerException ne) {
+                    portraitURL = element.getElementsByTagName("EventSmallImagePortrait").item(0).getTextContent().replace("http://", "https://");
+                }
+
+                Bitmap portrait = DownloadImage(portraitURL);
+                m_arrPortraitBmps.add(portrait);
+
+                String title = element.getElementsByTagName("Title").item(0).getTextContent();
+                m_arrTitles.add(title);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
+        m_itemListener = itemClickListener;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.row, parent, false);
+        View view = inflater.inflate(R.layout.archive_row, parent, false);
         return new ViewHolder(view);
     }
 
@@ -60,9 +90,7 @@ class ListAdapt extends RecyclerView.Adapter<ListAdapt.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.title.setText(m_arrTitles.get(position));
         holder.portrait.setImageBitmap(m_arrPortraitBmps.get(position));
-
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("HH:mm dd MM yyyy");
-        holder.startTime.setText(m_arrBeginTimes.get(position).format(format));
+        holder.bar.setRating(m_arrRatings.get(position));
 
         holder.itemView.setOnClickListener(view -> {
             m_itemListener.OnItemClick(position);
@@ -76,25 +104,21 @@ class ListAdapt extends RecyclerView.Adapter<ListAdapt.ViewHolder> {
 
     class ViewHolder extends RecyclerView.ViewHolder {
         TextView title;
-        TextView startTime;
-        TextView length;
+        RatingBar bar;
         ImageView portrait;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             title = itemView.findViewById(R.id.title);
-            startTime = itemView.findViewById(R.id.start);
-            length = itemView.findViewById(R.id.length);
-            portrait = itemView.findViewById(R.id.portrait);
+            bar = itemView.findViewById(R.id.ratingBar2);
+            portrait = itemView.findViewById(R.id.archivePortrait);
         }
     }
 
     // Functions OpenHttpConnection and DownloadImage copied from https://stackoverflow.com/a/12173580
 
     private InputStream OpenHttpConnection(String urlString) throws IOException {
-        System.out.println(urlString);
-
         InputStream in = null;
         int response = -1;
 

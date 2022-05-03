@@ -54,7 +54,6 @@ public class Theatre {
     public boolean fetchMovies() { // Returns success as boolean
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            System.out.println(String.format(m_theatreURL, m_theatreAreaID, m_date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))));
             Document doc = builder.parse(String.format(m_theatreURL, m_theatreAreaID, m_date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))));
             doc.getDocumentElement().normalize();
 
@@ -67,11 +66,25 @@ public class Theatre {
                 String title = element.getElementsByTagName("Title").item(0).getTextContent();
                 String dtStart = element.getElementsByTagName("dttmShowStart").item(0).getTextContent();
                 String dtEnd = element.getElementsByTagName("dttmShowEnd").item(0).getTextContent();
-                String portraitURL = element.getElementsByTagName("EventLargeImagePortrait").item(0).getTextContent();
-                String landscapeURL = element.getElementsByTagName("EventLargeImageLandscape").item(0).getTextContent();
-                String ratingIconURL = element.getElementsByTagName("RatingImageUrl").item(0).getTextContent();
 
-                m_arrMovies.add(new Movie(title, dtStart, dtEnd, portraitURL, landscapeURL, ratingIconURL));
+                String portraitURL;
+                try {
+                    portraitURL = element.getElementsByTagName("EventLargeImagePortrait").item(0).getTextContent();
+                } catch (NullPointerException ne) {
+                    portraitURL = element.getElementsByTagName("EventSmallImagePortrait").item(0).getTextContent();
+                }
+
+                String landscapeURL;
+                try {
+                    landscapeURL = element.getElementsByTagName("EventLargeImageLandscape").item(0).getTextContent();
+                } catch (NullPointerException ne) {
+                    landscapeURL = element.getElementsByTagName("EventSmallImageLandscape").item(0).getTextContent();
+                }
+
+                String ratingIconURL = element.getElementsByTagName("RatingImageUrl").item(0).getTextContent();
+                String eventID = element.getElementsByTagName("EventID").item(0).getTextContent();
+
+                m_arrMovies.add(new Movie(title, dtStart, dtEnd, portraitURL, landscapeURL, ratingIconURL, eventID));
             }
 
             return true; // Success
