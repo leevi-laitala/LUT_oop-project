@@ -108,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
             public void OnItemClick(int position) {
                 //movies.get(position).getId(); gets id
                 Intent movieIntent = new Intent(MainActivity.this, MovieActivity.class);
+                movieIntent.putExtra("movieId",position);//id here when ready
                 startActivity(movieIntent);
             }
         });
