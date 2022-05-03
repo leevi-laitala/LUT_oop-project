@@ -24,17 +24,21 @@ public class ArchiveActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_archive);
 
-        m_arrRatings = new ArrayList<Float>();
-        m_arrEventIDs = new ArrayList<String>();
+        // Initialize arrays for ratings and eventIDs
+        m_arrRatings = new ArrayList<>();
+        m_arrEventIDs = new ArrayList<>();
 
+        // Open file from device storage
         SharedPreferences sp = getSharedPreferences("MovieArchive", Context.MODE_PRIVATE);
-        m_mapData = sp.getAll();
+        m_mapData = sp.getAll(); // Save file to hashmap
 
+        // Populate arrays from hashmap
         for (Map.Entry<String, ?> it : m_mapData.entrySet()) {
             m_arrEventIDs.add(it.getKey());
             m_arrRatings.add((Float) it.getValue());
         }
 
+        // Construct recycler view
         constructListView();
     }
 
@@ -42,13 +46,10 @@ public class ArchiveActivity extends AppCompatActivity {
     public void constructListView() {
         System.out.println(m_arrEventIDs);
 
-        ArchiveAdapt adapter = new ArchiveAdapt(this, m_arrEventIDs, m_arrRatings, new ArchiveAdapt.ItemClickListener() {
-            @Override
-            public void OnItemClick(int position) {
-                System.out.println("Jee jee jee");
-            }
-        });
+        // Init adapter
+        ArchiveAdapt adapter = new ArchiveAdapt(this, m_arrEventIDs, m_arrRatings, position -> System.out.println("Jee jee jee"));
 
+        // Populate recycler view
         RecyclerView recyclerView = findViewById(R.id.archiveList);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

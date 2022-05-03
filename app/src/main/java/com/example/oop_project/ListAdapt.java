@@ -1,5 +1,6 @@
 package com.example.oop_project;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,6 +20,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -28,19 +30,22 @@ class ListAdapt extends RecyclerView.Adapter<ListAdapt.ViewHolder> {
     ArrayList<Bitmap> m_arrPortraitBmps;
     ArrayList<LocalDateTime> m_arrBeginTimes;
     ArrayList<LocalDateTime> m_arrEndTimes;
+    ArrayList<Duration> m_arrDurations;
     Context context;
     ItemClickListener m_itemListener;
 
-    public ListAdapt(Context cx, ArrayList<String> titles, ArrayList<String> portraitURLs, ArrayList<LocalDateTime> beginTimes, ArrayList<LocalDateTime> endTimes, ItemClickListener itemClickListener) {
+    public ListAdapt(Context cx, ArrayList<String> titles, ArrayList<String> portraitURLs, ArrayList<LocalDateTime> beginTimes, ArrayList<LocalDateTime> endTimes, ArrayList<Duration> lengths, ItemClickListener itemClickListener) {
         context = cx;
         m_arrTitles = titles;
         m_arrBeginTimes = beginTimes;
         m_arrEndTimes = endTimes;
+        m_arrDurations = lengths;
   
         m_itemListener = itemClickListener;
 
-        m_arrPortraitBmps = new ArrayList<Bitmap>();
+        m_arrPortraitBmps = new ArrayList<>();
 
+        // Download portrait images, and save them in array
         for (int i = 0; i < portraitURLs.size(); i++) {
             String url = portraitURLs.get(i).replace("http://", "https://"); // Upgrade to https
             m_arrPortraitBmps.add(DownloadImage(url));
@@ -55,26 +60,34 @@ class ListAdapt extends RecyclerView.Adapter<ListAdapt.ViewHolder> {
         return new ViewHolder(view);
     }
 
+    // Assign variables to view elements
+    @SuppressLint("SetTextI18n")
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        // Position is array index, used to populate list
         holder.title.setText(m_arrTitles.get(position));
         holder.portrait.setImageBitmap(m_arrPortraitBmps.get(position));
 
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("HH:mm dd MM yyyy");
+        // Set date with custom format
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
         holder.startTime.setText(m_arrBeginTimes.get(position).format(format));
 
-        holder.itemView.setOnClickListener(view -> {
-            m_itemListener.OnItemClick(position);
-        });
+        // Set lenght text, and make it pretty with regex
+        holder.length.setText("Length: " + m_arrDurations.get(position).toString().substring(2).replaceAll("(\\d[HMS])(?!$)", "$1 ").toLowerCase());
+
+        // Set click event callback
+        holder.itemView.setOnClickListener(view -> m_itemListener.OnItemClick(position));
     }
 
+    // Return list length
     @Override
     public int getItemCount() {
         return m_arrTitles.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    // Fetch views by id and save them to variables
+    static class ViewHolder extends RecyclerView.ViewHolder {
         TextView title;
         TextView startTime;
         TextView length;
@@ -96,7 +109,7 @@ class ListAdapt extends RecyclerView.Adapter<ListAdapt.ViewHolder> {
         System.out.println(urlString);
 
         InputStream in = null;
-        int response = -1;
+        int response;
 
         URL url = new URL(urlString);
         URLConnection conn = url.openConnection();
@@ -123,7 +136,7 @@ class ListAdapt extends RecyclerView.Adapter<ListAdapt.ViewHolder> {
 
     private Bitmap DownloadImage(String URL) {
         Bitmap bitmap = null;
-        InputStream in = null;
+        InputStream in;
         try {
             in = OpenHttpConnection(URL);
             bitmap = BitmapFactory.decodeStream(in);
