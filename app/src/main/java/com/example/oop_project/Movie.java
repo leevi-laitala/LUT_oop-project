@@ -9,33 +9,33 @@ import java.time.format.DateTimeFormatter;
 
 // Container for movie information, title, start time, etc.
 public class Movie {
-    private String m_title;
+    private final String m_title;
 
-    private LocalDateTime m_timeBegin;
-    private LocalDateTime m_timeEnd;
+    private final LocalDateTime m_timeBegin;
+    private final LocalDateTime m_timeEnd;
 
-    private Duration m_length;
+    private final Duration m_length;
 
     // Graphics
-    private String m_urlEventImagePortrait;
-    private String m_urlEventImageLandscape;
-    private String m_urlRatingIcon;
-    private String m_eventID;
+    private final String m_urlEventImagePortrait;
+    private final String m_eventID;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     Movie(String title, String begin, String end, String portraitURL, String landscapeURL, String ratingIconURL, String eventid) {
         m_title = title;
         m_urlEventImagePortrait = portraitURL;
-        m_urlEventImageLandscape = landscapeURL;
-        m_urlRatingIcon = ratingIconURL;
         m_eventID = eventid;
 
+        // Parse date and time from strings to localdatetime objects
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         m_timeBegin = LocalDateTime.from(dtf.parse(begin.replace("T", " ")));
         m_timeEnd = LocalDateTime.from(dtf.parse(end.replace("T", " ")));
 
+        // Calculate difference between datetime objects
         m_length = Duration.between(m_timeBegin, m_timeEnd);
     }
+
+    // Getters and setters below
 
     public String getTitle() {
         return m_title;
