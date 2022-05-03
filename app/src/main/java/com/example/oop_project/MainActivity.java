@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
     private Button dateButton;
     private DatePickerDialog datePickerDialog;
 
-    ArrayList<Theatre> arrTheatres = new ArrayList<Theatre>(); // Test array containing theatre objects
     TheatreManager manager;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -47,19 +46,16 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openLoginActivity();
+                openArchiveActivity();
             }
         });
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-
-
         manager = new TheatreManager();
 
         Spinner spinner = (Spinner)findViewById(R.id.theatreList);
         spinner.setOnItemSelectedListener(this);
-        List<String> theaterIds = new ArrayList<String>();
 
         ArrayList<String> theatreNames = manager.getTheatreNames();
 
@@ -91,8 +87,8 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
         startActivity(intent);
     }
 
-    public void openMainActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
+    public void openArchiveActivity() {
+        Intent intent = new Intent(this, ArchiveActivity.class);
         startActivity(intent);
     }
 
@@ -106,9 +102,8 @@ public class MainActivity extends AppCompatActivity implements OnItemSelectedLis
         ListAdapt adapter = new ListAdapt(this, movieTitles, moviePortraitURLs, movieBeginTimes, movieEndTimes, new ListAdapt.ItemClickListener() {
             @Override
             public void OnItemClick(int position) {
-                //movies.get(position).getId(); gets id
                 Intent movieIntent = new Intent(MainActivity.this, MovieActivity.class);
-                movieIntent.putExtra("movieId",position);//id here when ready
+                movieIntent.putExtra("eventID", manager.getMovies().get(position).getEventIDUrl()); // Gets selected movie's event id, which can be parsed later
                 startActivity(movieIntent);
             }
         });
