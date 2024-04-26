@@ -1,6 +1,7 @@
 # Finnkino helper
 
-Finnkino helper android app written in Java made for school project.
+Finnkino helper android app written in Java made for school project on
+object oriented programming.
 
 ## Documentation
 
